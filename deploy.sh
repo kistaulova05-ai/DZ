@@ -1,40 +1,35 @@
 #!/bin/bash
+set -e
 
-# Скрипт для развертывания приложения Task Tracker
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m'
 
+ok()   { echo -e "${GREEN}[OK]${NC} $1"; }
+info() { echo -e "${YELLOW}>>>${NC} $1"; }
 
-echo "РАЗВЕРТЫВАНИЕ ПРИЛОЖЕНИЯ Task Tracker"
+PORT=${PORT:-5000}
 
-# 1. Проверка наличия Python
-echo "1. Проверка Python..."
-if command -v python3 &>/dev/null; then
-    echo "  Python установлен: $(python3 --version)"
-else
-    echo "  Python не найден! Установите Python 3.8+"
-    exit 1
-fi
+echo ""
+echo "  WPS Attack Detector — Развёртывание"
+echo "======================================"
 
-# 2. Установка Django
-echo "2. Установка Django..."
-pip install django --quiet
-echo "  Django установлен"
+info "Установка зависимостей..."
+pip install --quiet django pandas numpy matplotlib
+ok "Зависимости установлены"
 
-# 3. Проверка наличия файла manage.py
-echo "3. Проверка структуры проекта..."
-if [ -f "manage.py" ]; then
-    echo "  Проект Django найден"
-else
-    echo "  Файл manage.py не найден!"
-    exit 1
-fi
+info "Применение миграций..."
+python manage.py migrate --no-input
+ok "Миграции применены"
 
-# 4. Выполнение миграций
-echo "4. Выполнение миграций базы данных..."
-python3 manage.py migrate --noinput
-echo "   Миграции выполнены"
+info "Проверка конфигурации..."
+python manage.py check
+ok "Конфигурация в порядке"
 
-# 5. Запуск сервера
-echo "5. Запуск сервера..."
-echo "   Приложение доступно по адресу:"
-echo "   http://0.0.0.0:8080"
-python3 manage.py runserver 0.0.0.0:8080
+echo ""
+echo -e "  Адрес: ${GREEN}http://0.0.0.0:${PORT}/${NC}"
+echo "======================================"
+echo ""
+
+info "Запуск сервера на порту $PORT..."
+exec python manage.py runserver "0.0.0.0:$PORT"

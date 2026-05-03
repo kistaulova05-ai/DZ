@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="ru"> 
+<head> 
+  <meta charset="UTF-8"> <!-- Кодировка для поддержки кириллицы -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Адаптация под мобильные устройства -->
+  <title>WPS Attack Detector — Дашборд</title> <!-- Заголовок вкладки браузера -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"> <!-- Bootstrap 5.3.2 (CSS) - обеспечивает сетку, карточки, таблицы, отступы, адаптивность -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"> <!-- Bootstrap Icons 1.11.3 - набор иконок для визуального оформления (щиты, графики, шестерёнки) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script> <!-- Chart.js 4.4.2 - библиотека для построения интерактивных графиков (круговых, столбчатых, линейных) -->
+  <!-- Стиль страницы -->
+  <style> 
+    :root {
+      --bg-dark: #0f1117;
+      --card-bg: #1a1d27;
+      --card-border: #2a2d3e;
+      --accent-red: #e74c3c;
+      --accent-green: #2ecc71;
+      --accent-yellow: #f39c12;
+      --accent-blue: #3498db;
+      --text-muted: #8892a4;
+    }
+    body { background: var(--bg-dark); color: #e8eaf0; font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; }
+    .navbar-brand { font-weight: 700; }
+
+    .stat-card {
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: 12px; padding: 1.25rem 1.5rem;
+      transition: transform .2s, border-color .2s;
+    }
+    .stat-card:hover { transform: translateY(-2px); border-color: #3a3d55; }
+    .stat-icon { width: 48px; height: 48px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; }
+    .stat-value { font-size: 2rem; font-weight: 700; line-height: 1; }
+    .stat-label { font-size: 0.82rem; color: var(--text-muted); margin-top: 4px; }
+
+    .chart-card {
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: 12px; padding: 1.25rem 1.5rem;
+    }
+    .chart-title {
+      font-size: 0.85rem; font-weight: 600; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 1rem;
+    }
+    .section-title { font-size: 1rem; font-weight: 600; margin-bottom: 1rem; padding-bottom: .5rem; border-bottom: 1px solid var(--card-border); }
+
+    .table-dark { --bs-table-bg: transparent; }
+    .table-dark th { color: var(--text-muted); font-size: .78rem; text-transform: uppercase; letter-spacing: .5px; border-color: var(--card-border); }
+    .table-dark td { border-color: var(--card-border); font-size: .87rem; vertical-align: middle; }
+    .table-dark tbody tr:hover { background: rgba(255,255,255,.03); }
+
+    .badge-blocked { background: rgba(231,76,60,.18); color: #e74c3c; border: 1px solid #e74c3c; padding: 3px 8px; border-radius: 20px; font-size: .78rem; }
+    .badge-active  { background: rgba(46,204,113,.15); color: #2ecc71; border: 1px solid #2ecc71; padding: 3px 8px; border-radius: 20px; font-size: .78rem; }
+    .badge-success-ev { background: rgba(46,204,113,.18); color: #2ecc71; border: 1px solid #2ecc71; }
+    .badge-fail-ev    { background: rgba(231,76,60,.18);  color: #e74c3c; border: 1px solid #e74c3c; }
+
+    .pulse-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #2ecc71; animation: pulse 2s infinite; margin-right: 6px; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+    .threshold-badge { font-size: .78rem; background: rgba(243,156,18,.15); color: #f39c12; border: 1px solid #f39c12; border-radius: 20px; padding: 2px 10px; }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--card-border); border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+
+  <!-- Навигационная панель: Содержит название системы, индикатор работы и ссылку на админ-панель -->
+<nav class="navbar navbar-dark" style="background:#12151f; border-bottom:1px solid #2a2d3e;">
+  <div class="container-fluid px-4">
+    <!-- Логотип/название системы-->
+    <span class="navbar-brand">
+      <i class="bi bi-shield-exclamation me-2 text-danger"></i>WPS Attack Detector
+    </span>
+    <!-- Правая часть: статус работы и кнопка "Админ" -->
+    <div class="d-flex align-items-center gap-3">
+      <span class="text-muted small"><span class="pulse-dot"></span>Анализ активен</span>
+      <a href="/admin/" class="btn btn-sm btn-outline-secondary"><i class="bi bi-gear me-1"></i>Админ</a>
+    </div>
+  </div>
+</nav>
+
+  <!-- Основной контейнер дашборда-->
+<div class="container-fluid px-4 py-4">
+
+  <!-- Основные карточки статистики: общее число попыток, уникальных MAC, заблокированных, активных -->
+  <div class="row g-3 mb-4">
+     <!-- Карточка 1: Общее количество попыток -->
+    <div class="col-6 col-md-3">
+      <div class="stat-card">
+        <div class="d-flex align-items-start justify-content-between">
+          <div><div class="stat-value">{{ stats.total_attempts }}</div><div class="stat-label">Попыток в 1.json</div></div>
+          <div class="stat-icon" style="background:rgba(52,152,219,.15);color:#3498db;"><i class="bi bi-activity"></i></div>
+        </div>
+      </div>
+    </div>
+     <!-- Карточка 2: Количество уникальных MAC-адресов -->
+    <div class="col-6 col-md-3">
+      <div class="stat-card">
+        <div class="d-flex align-items-start justify-content-between">
+          <div><div class="stat-value">{{ stats.unique_macs }}</div><div class="stat-label">Уникальных MAC</div></div>
+          <div class="stat-icon" style="background:rgba(52,152,219,.15);color:#3498db;"><i class="bi bi-router"></i></div>
+        </div>
+      </div>
+    </div>
+     <!-- Карточка 3: Количество заблокированных устройств -->
+    <div class="col-6 col-md-3">
+      <div class="stat-card">
+        <div class="d-flex align-items-start justify-content-between">
+          <div><div class="stat-value text-danger">{{ stats.blocked_count }}</div><div class="stat-label">Заблокировано</div></div>
+          <div class="stat-icon" style="background:rgba(231,76,60,.15);color:#e74c3c;"><i class="bi bi-shield-x"></i></div>
+        </div>
+      </div>
+    </div>
+     <!-- Карточка 4: Количество активных устройств -->
+    <div class="col-6 col-md-3">
+      <div class="stat-card">
+        <div class="d-flex align-items-start justify-content-between">
+          <div><div class="stat-value text-success">{{ stats.active_count }}</div><div class="stat-label">Активных устройств</div></div>
+          <div class="stat-icon" style="background:rgba(46,204,113,.15);color:#2ecc71;"><i class="bi bi-check-circle"></i></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Раасширенная статистика: Среднее/максимальное число неудачных попыток, список заблокированных MAC -->
+  <div class="row g-3 mb-4">
+    <!-- Карточка: среднее количество неудачных попыток на одно устройство -->
+    <div class="col-6 col-md-3">
+      <div class="stat-card">
+        <div class="stat-value text-warning" style="font-size:1.5rem;">{{ stats.mean_fails|floatformat:1 }}</div>
+        <div class="stat-label">Среднее неудачных попыток</div>
+      </div>
+    </div>
+    <!-- Карточка: максимальное количество неудачных попыток у одного устройства -->
+    <div class="col-6 col-md-3">
+      <div class="stat-card">
+        <div class="stat-value text-danger" style="font-size:1.5rem;">{{ stats.max_fails }}</div>
+        <div class="stat-label">Максимум неудачных попыток</div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="stat-card h-100 d-flex flex-column justify-content-center">
+        {% if stats.blocked_macs %}
+        <!-- Если есть заблокированные устройства, выводим их список -->
+          <div class="stat-label mb-2">Заблокированные MAC-адреса:</div>
+          {% for b in stats.blocked_macs %}
+            <div class="font-monospace small text-danger">
+              <i class="bi bi-arrow-right-short"></i>{{ b.mac }}
+              <span class="text-muted ms-2">({{ b.fails }} неудач)</span>
+            </div>
+          {% endfor %}
+        <!-- Если заблокированных нет, выводим сообщение об этом -->
+        {% else %}
+          <div class="stat-label"><i class="bi bi-check-circle text-success me-1"></i>Заблокированных устройств нет</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- КНОПКА ОБНОВЛЕНИЯ -->
+  <div class="d-flex align-items-center gap-3 mb-4 flex-wrap">
+    <button id="updateBtn" class="btn btn-danger">
+      <i class="bi bi-arrow-clockwise me-2"></i>Обновление журнала событий
+    </button>
+    <div id="updateResult" class="text-muted small"></div>
+  </div>
+
+  <!-- Графики: круговая диаграмма, столбчатая диаграмма -->
+  <div class="row g-3 mb-3">
+    <!-- Круговая диаграмма (статусы "Заблокирован"/"Активен") -->
+    <div class="col-md-4">
+      <div class="chart-card h-100">
+        <div class="chart-title"><i class="bi bi-pie-chart me-1"></i>Круговая диаграмма статусов</div>
+        <div style="position:relative;height:270px;">
+          <canvas id="statusPieChart"></canvas>
+        </div>
+      </div>
+    </div>
+    <!-- Гистограмма неудачных попыток по MAC-адресам -->
+    <div class="col-md-8">
+      <div class="chart-card h-100">
+        <div class="chart-title"><i class="bi bi-bar-chart me-1"></i>Гистограмма неудачных попыток по MAC</div>
+        <div style="position:relative;height:270px;">
+          <canvas id="failedAttemptsChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Линейный график временной шкалы (попытки по часам) -->
+  <div class="row g-3 mb-4">
+    <div class="col-12">
+      <div class="chart-card">
+        <div class="chart-title"><i class="bi bi-graph-up me-1"></i>Временная шкала попыток</div>
+        <div style="position:relative;height:230px;">
+          <canvas id="timelineChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Детализированная таблица со всеми попытками -->
+  <div class="chart-card mb-4">
+    <div class="section-title">
+      <i class="bi bi-table me-2"></i>ОТЧЁТ
+    </div>
+    <div class="table-responsive">
+      <table class="table table-dark table-hover align-middle mb-0">
+        <thead>
+          <tr>
+            <th>MAC-адрес</th>
+            <th>Производитель</th>
+            <th>SSID</th>
+            <th>PIN</th>
+            <th>Время</th>
+            <th>Статус</th>
+            <th>Блок</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in table_rows %}
+          <tr>
+            <td class="font-monospace fw-semibold">{{ row.mac }}</td>
+            <td class="small text-muted">{{ row.vendor }}</td>
+            <td class="small">{{ row.ssid }}</td>
+            <td class="font-monospace small">{{ row.pin }}</td>
+            <td class="text-muted small">{{ row.timestamp|slice:":16" }}</td>
+            <td>
+              {% if row.status == "УСПЕШНО" %}
+                <span class="badge badge-success-ev rounded-pill">{{ row.status }}</span>
+              {% else %}
+                <span class="badge badge-fail-ev rounded-pill">{{ row.status }}</span>
+              {% endif %}
+            </td>
+            <td>
+              {% if row.block == "ЗАБЛОКИРОВАН" %}
+                <span class="badge-blocked"><i class="bi bi-slash-circle me-1"></i>{{ row.block }}</span>
+              {% else %}
+                <span class="text-muted small">—</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="7" class="text-center text-muted py-4">
+              Нет данных в 1.json. Запустите анализ ЛР_2.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+  <!-- Подключение JavaScript-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // Настройка стилей для графиков
+  Chart.defaults.color = '#8892a4';
+  Chart.defaults.borderColor = '#2a2d3e';
+  Chart.defaults.font.family = "'Segoe UI', system-ui, sans-serif";
+
+  // Инициализация круговой диаграммы 
+  async function initStatusPie() {
+    const res  = await fetch('/api/chart/status-pie/'); // Запрашиваем данные из API
+    const data = await res.json(); // Получаем данные из API
+    new Chart(document.getElementById('statusPieChart'), { // Создаём новый график
+      type: 'doughnut',
+      data: {
+        labels: data.labels,
+        datasets: [{
+          data:            data.data,
+          backgroundColor: ['#e74c3c99', '#2ecc7199'],
+          borderColor:     data.colors,
+          borderWidth:     2,
+          hoverOffset:     8,
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'bottom', labels: { padding: 16, usePointStyle: true } },
+          tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.raw} устр.` } }
+        }
+      }
+    });
+  }
+
+  // Инициализация гистограммы неудачных попыток 
+  async function initFailedAttemptsChart() { 
+    const res  = await fetch('/api/chart/failed-attempts/'); // Запрашиваем данные из API
+    const data = await res.json(); // Получаем данные из API
+    const bgColors = data.statuses.map(s => s === 'Заблокирован' ? '#e74c3c99' : '#3498db88');
+    const bdColors = data.statuses.map(s => s === 'Заблокирован' ? '#e74c3c'   : '#3498db');
+
+    new Chart(document.getElementById('failedAttemptsChart'), { // Создаём новый график
+      type: 'bar',
+      data: {
+        labels: data.labels,
+        datasets: [
+          {
+            label: 'Неудачных попыток',
+            data:  data.fails,
+            backgroundColor: bgColors,
+            borderColor:     bdColors,
+            borderWidth: 1.5, borderRadius: 6, borderSkipped: false,
+          },
+          {
+            label: 'Всего попыток',
+            data:  data.total,
+            backgroundColor: 'rgba(255,255,255,0.05)',
+            borderColor:     'rgba(255,255,255,0.2)',
+            borderWidth: 1, borderRadius: 6, borderSkipped: false,
+          }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'bottom', labels: { usePointStyle: true, padding: 14 } },
+          tooltip: {
+            callbacks: {
+              title: (items) => {
+                const idx = items[0].dataIndex;
+                return `${data.labels[idx]}\n${data.vendors[idx]}`;
+              }
+            }
+          }
+        },
+        scales: {
+          x: { ticks: { font: { size: 10 }, maxRotation: 30 }, grid: { display: false } },
+          y: { beginAtZero: true, grid: { color: '#2a2d3e' } }
+        }
+      }
+    });
+  }
+
+  // Инициализация линейного графика временной шкалы
+  async function initTimelineChart() {
+    const res  = await fetch('/api/chart/timeline/'); // Запрашиваем данные из API
+    const data = await res.json(); // Получаем данные из API
+    new Chart(document.getElementById('timelineChart'), { // Создаём новый график
+      type: 'line',
+      data: { labels: data.labels, datasets: data.datasets },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { position: 'bottom', labels: { usePointStyle: true, padding: 14, boxWidth: 8 } }
+        },
+        scales: {
+          x: { ticks: { maxTicksLimit: 10, font: { size: 10 }, maxRotation: 30 }, grid: { color: '#2a2d3e22' } },
+          y: { beginAtZero: true, ticks: { stepSize: 1 }, grid: { color: '#2a2d3e' } }
+        }
+      }
+    });
+  }
+
+  // Обновление журнала событий
+  async function updateLog() {
+    const btn    = document.getElementById('updateBtn');
+    const result = document.getElementById('updateResult');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Обновление…';
+    result.textContent = '';
+    try {
+      const res  = await fetch('/api/scan/', {
+        method: 'POST',
+        headers: { 'X-CSRFToken': getCookie('csrftoken') }
+      });
+      const data = await res.json();
+      if (data.error) {
+        result.innerHTML = `<span class="text-danger"><i class="bi bi-x-circle me-1"></i>${data.error}</span>`;
+      } else {
+        result.innerHTML =
+          `<span class="text-success"><i class="bi bi-check-circle me-1"></i>` +
+          `Журнал обновлён — попыток: <b>${data.total_attempts}</b> | ` +
+          `заблокировано: <b>${data.blocked_count}</b> | среднее неудач: <b>${data.mean_fails}</b></span>`;
+        setTimeout(() => location.reload(), 1500);
+      }
+    } catch (e) {
+      result.innerHTML = `<span class="text-danger">Ошибка: ${e.message}</span>`;
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="bi bi-arrow-clockwise me-2"></i>Обновление журнала событий';
+    }
+  }
+
+  function getCookie(name) {
+    const m = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+    return m ? decodeURIComponent(m[1]) : '';
+  }
+
+  document.getElementById('updateBtn').addEventListener('click', updateLog);
+
+  initStatusPie();
+  initFailedAttemptsChart();
+  initTimelineChart();
+</script>
+</body>
+</html>

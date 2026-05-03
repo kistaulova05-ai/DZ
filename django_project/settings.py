@@ -25,10 +25,36 @@ SECRET_KEY = 'django-insecure-4ju2n@$f9d0c=h)_g0lbb%k9&@rf(xa$d$g$&5ri$uf)*gev^4
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = os.environ["REPLIT_DOMAINS"].split(',')
+_domains = os.environ.get("REPLIT_DOMAINS", "localhost").split(',')
+ALLOWED_HOSTS = _domains + ['localhost', '127.0.0.1']
+
+# Добавляем все порты, которые Replit использует для предпросмотра
+_ports = ['', ':3000', ':5000', ':8000', ':8080', ':6000', ':6800']
+
+# ДЗ_8: миграция на HTTPS ───────────────────────────────────────────────
+# Replit передаёт исходную HTTPS-схему через X-Forwarded-Proto.
+# Без этой строки Django считает соединение HTTP и зацикливает редирект.
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# В режиме развёртывания принудительно включаем все HTTPS-механизмы.
+if 'REPLIT_DEPLOYMENT' in os.environ:
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_HSTS_SECONDS = 31536000
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    X_FRAME_OPTIONS = 'DENY'
+
+# CSRF_TRUSTED_ORIGINS — только https:// для внешних доменов;
+# localhost остаётся по http для локальной разработки.
 CSRF_TRUSTED_ORIGINS = [
-    "https://" + domain for domain in os.environ["REPLIT_DOMAINS"].split(',')
-]
+    f"https://{domain}{port}"
+    for domain in _domains
+    for port in _ports
+] + ["http://localhost:5000", "http://localhost:3000"]
+# ───────────────────────────────────────────────────────────────────────────
 
 # Application definition
 
@@ -39,6 +65,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'wps_detector',
 ]
 
 MIDDLEWARE = [

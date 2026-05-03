@@ -1,0 +1,242 @@
+[
+  {
+    "mac": "AA:BB:CC:11:22:33",
+    "ssid": "CORP-INTERNAL-55G",
+    "pin_tried": "12345670",
+    "timestamp": "2026-04-15T08:01:00"
+  },
+  {
+    "mac": "AA:BB:CC:11:22:33",
+    "ssid": "CORP-INTERNAL-5G",
+    "pin_tried": "12345671",
+    "timestamp": "2026-04-15T08:01:15"
+  },
+  {
+    "mac": "AA:BB:CC:11:22:33",
+    "ssid": "CORP-INTERNAL-5G",
+    "pin_tried": "12345672",
+    "timestamp": "2026-04-15T08:01:30"
+  },
+  {
+    "mac": "AA:BB:CC:11:22:33",
+    "ssid": "CORP-INTERNAL-5G",
+    "pin_tried": "12345673",
+    "timestamp": "2026-04-15T08:01:45"
+  },
+  {
+    "mac": "AA:BB:CC:11:22:33",
+    "ssid": "CORP-INTERNAL-5G",
+    "pin_tried": "12345674",
+    "timestamp": "2026-04-15T08:02:00"
+  },
+  {
+    "mac": "AA:BB:CC:11:22:33",
+    "ssid": "CORP-INTERNAL-5G",
+    "pin_tried": "12345675",
+    "timestamp": "2026-04-15T08:02:15"
+  },
+  {
+    "mac": "AA:BB:CC:11:22:33",
+    "ssid": "CORP-INTERNAL-5G",
+    "pin_tried": "12345676",
+    "timestamp": "2026-04-15T08:02:30"
+  },
+  {
+    "mac": "FC:FB:FB:77:88:99",
+    "ssid": "ENTERPRISE-SECURE",
+    "pin_tried": "00000000",
+    "timestamp": "2026-04-15T09:00:00"
+  },
+  {
+    "mac": "FC:FB:FB:77:88:99",
+    "ssid": "ENTERPRISE-SECURE",
+    "pin_tried": "11111111",
+    "timestamp": "2026-04-15T09:00:30"
+  },
+  {
+    "mac": "FC:FB:FB:77:88:99",
+    "ssid": "ENTERPRISE-SECURE",
+    "pin_tried": "22222222",
+    "timestamp": "2026-04-15T09:01:00"
+  },
+  {
+    "mac": "FC:FB:FB:77:88:99",
+    "ssid": "ENTERPRISE-SECURE",
+    "pin_tried": "33333333",
+    "timestamp": "2026-04-15T09:01:30"
+  },
+  {
+    "mac": "FC:FB:FB:77:88:99",
+    "ssid": "ENTERPRISE-SECURE",
+    "pin_tried": "44444444",
+    "timestamp": "2026-04-15T09:02:00"
+  },
+  {
+    "mac": "FC:FB:FB:77:88:99",
+    "ssid": "ENTERPRISE-SECURE",
+    "pin_tried": "55555555",
+    "timestamp": "2026-04-15T09:02:30"
+  },
+  {
+    "mac": "FC:FB:FB:77:88:99",
+    "ssid": "ENTERPRISE-SECURE",
+    "pin_tried": "66666666",
+    "timestamp": "2026-04-15T09:03:00"
+  },
+  {
+    "mac": "FC:FB:FB:77:88:99",
+    "ssid": "ENTERPRISE-SECURE",
+    "pin_tried": "77777777",
+    "timestamp": "2026-04-15T09:03:30"
+  },
+  {
+    "mac": "FC:FB:FB:77:88:99",
+    "ssid": "ENTERPRISE-SECURE",
+    "pin_tried": "88888888",
+    "timestamp": "2026-04-15T09:04:00"
+  },
+  {
+    "mac": "FC:FB:FB:77:88:99",
+    "ssid": "ENTERPRISE-SECURE",
+    "pin_tried": "99999999",
+    "timestamp": "2026-04-15T09:04:30"
+  },
+  {
+    "mac": "FC:FB:FB:77:88:99",
+    "ssid": "ENTERPRISE-SECURE",
+    "pin_tried": "10101010",
+    "timestamp": "2026-04-15T09:05:00"
+  },
+  {
+    "mac": "FC:FB:FB:77:88:99",
+    "ssid": "ENTERPRISE-SECURE",
+    "pin_tried": "20202020",
+    "timestamp": "2026-04-15T09:05:30"
+  },
+  {
+    "mac": "FC:FB:FB:77:88:99",
+    "ssid": "ENTERPRISE-SECURE",
+    "pin_tried": "30303030",
+    "timestamp": "2026-04-15T09:06:00"
+  },
+  {
+    "mac": "D8:BB:C1:44:55:66",
+    "ssid": "CORP-INTERNAL-2G",
+    "pin_tried": "87654321",
+    "timestamp": "2026-04-15T10:00:00"
+  },
+  {
+    "mac": "D8:BB:C1:44:55:66",
+    "ssid": "CORP-INTERNAL-2G",
+    "pin_tried": "87654320",
+    "timestamp": "2026-04-15T10:00:20"
+  },
+  {
+    "mac": "D8:BB:C1:44:55:66",
+    "ssid": "CORP-INTERNAL-2G",
+    "pin_tried": "87654319",
+    "timestamp": "2026-04-15T10:00:40"
+  },
+  {
+    "mac": "D8:BB:C1:44:55:66",
+    "ssid": "CORP-INTERNAL-2G",
+    "pin_tried": "87654318",
+    "timestamp": "2026-04-15T10:01:00"
+  },
+  {
+    "mac": "D8:BB:C1:44:55:66",
+    "ssid": "CORP-INTERNAL-2G",
+    "pin_tried": "87654317",
+    "timestamp": "2026-04-15T10:01:20"
+  },
+  {
+    "mac": "D8:BB:C1:44:55:66",
+    "ssid": "CORP-INTERNAL-2G",
+    "pin_tried": "87654316",
+    "timestamp": "2026-04-15T10:01:40"
+  },
+  {
+    "mac": "B8:27:EB:DD:EE:FF",
+    "ssid": "STAFF-WIFI-SECURE",
+    "pin_tried": "11223344",
+    "timestamp": "2026-04-15T11:00:00"
+  },
+  {
+    "mac": "B8:27:EB:DD:EE:FF",
+    "ssid": "STAFF-WIFI-SECURE",
+    "pin_tried": "11223345",
+    "timestamp": "2026-04-15T11:00:30"
+  },
+  {
+    "mac": "B8:27:EB:DD:EE:FF",
+    "ssid": "STAFF-WIFI-SECURE",
+    "pin_tried": "11223346",
+    "timestamp": "2026-04-15T11:01:00"
+  },
+  {
+    "mac": "B8:27:EB:DD:EE:FF",
+    "ssid": "STAFF-WIFI-SECURE",
+    "pin_tried": "11223347",
+    "timestamp": "2026-04-15T11:01:30"
+  },
+  {
+    "mac": "B8:27:EB:DD:EE:FF",
+    "ssid": "STAFF-WIFI-SECURE",
+    "pin_tried": "11223348",
+    "timestamp": "2026-04-15T11:02:00"
+  },
+  {
+    "mac": "44:55:66:12:34:56",
+    "ssid": "ENTERPRISE-SECURE",
+    "pin_tried": "55443322",
+    "timestamp": "2026-04-15T15:00:00"
+  },
+  {
+    "mac": "AA:BB:CC:11:22:33",
+    "ssid": "CORP-INTERNAL-5G",
+    "pin_tried": "12345699",
+    "timestamp": "2026-04-16T07:00:00"
+  },
+  {
+    "mac": "AA:BB:CC:11:22:33",
+    "ssid": "CORP-INTERNAL-5G",
+    "pin_tried": "12345700",
+    "timestamp": "2026-04-16T07:00:20"
+  },
+  {
+    "mac": "AA:BB:CC:11:22:33",
+    "ssid": "CORP-INTERNAL-5G",
+    "pin_tried": "12345701",
+    "timestamp": "2026-04-16T07:00:40"
+  },
+  {
+    "mac": "AA:BB:CC:11:22:33",
+    "ssid": "CORP-INTERNAL-5G",
+    "pin_tried": "12345702",
+    "timestamp": "2026-04-16T07:01:00"
+  },
+  {
+    "mac": "AA:BB:CC:11:22:33",
+    "ssid": "CORP-INTERNAL-5G",
+    "pin_tried": "12345703",
+    "timestamp": "2026-04-16T07:01:20"
+  },
+  {
+    "mac": "AA:BB:CC:11:22:33",
+    "ssid": "CORP-INTERNAL-5G",
+    "pin_tried": "12345704",
+    "timestamp": "2026-04-16T07:01:40"
+  },
+  {
+    "mac": "AA:BB:CC:11:22:33",
+    "ssid": "CORP-INTERNAL-5G",
+    "pin_tried": "12345705",
+    "timestamp": "2026-04-16T07:02:00"
+  },
+  {
+    "mac": "AA:BB:CC:11:22:33",
+    "ssid": "CORP-INTERNAL-5G",
+    "pin_tried": "12345706",
+    "timestamp": "2026-04-16T07:02:20"
+  }
+]

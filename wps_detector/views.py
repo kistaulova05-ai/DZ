@@ -3,7 +3,8 @@ import os
 
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
-from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
+from django.views.decorators.http import require_POST, require_http_methods
 
 from .wps_detection import (
     load_attempts, analyze, save_failed_attempts,
@@ -64,6 +65,7 @@ def _refresh_cache():
 
 # Страница дашборда
 
+@ensure_csrf_cookie
 def dashboard(request):
     data = _get_analysis()
     stats = data["stats"]
@@ -145,7 +147,8 @@ def chart_event_types(request):
 # Запуск сканирования 
 
 
-@require_POST
+@csrf_exempt
+@require_http_methods(["POST"])
 def run_scan(request):
     """
     Запускает полный анализ из ЛР_2:
